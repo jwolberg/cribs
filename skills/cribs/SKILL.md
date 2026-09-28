@@ -111,7 +111,7 @@ npx -y hyperframes tts "<narration>" -o work/audio/2.2.wav --voice af_heart --js
 
 ### Build the timeline
 
-For each chapter, write `work/timeline-<n>.json`: every beat's start time and duration, with a gap of 0.4s between beats plus 0.8s of silence at the start and 1.0s at the end of the chapter. The last chapter ends with 3.0s instead, for the end card and fade. Beat start times are the cue points for the visuals. Build the chapter's narration track, `work/audio/chapter-<n>.wav`, by concatenating the beats with that silence (ffmpeg `adelay` or `apad`, or pre-made silent WAVs, at 48 kHz), and check that its length matches the timeline.
+For each chapter, write `work/timeline-<n>.json`: every beat's start time and duration, with a gap of 0.4s between beats plus 0.8s of silence at the start and 1.0s at the end of the chapter. The last chapter ends with 3.5s instead, for the end card and fade. Beat start times are the cue points for the visuals. Build the chapter's narration track, `work/audio/chapter-<n>.wav`, by concatenating the beats with that silence (ffmpeg `adelay` or `apad`, or pre-made silent WAVs, at 48 kHz), and check that its length matches the timeline.
 
 Then check what the voice actually said. Transcribe every beat WAV with a small local speech-to-text model, for example `uv run --with faster-whisper` and the `base.en` model, and compare it with the narration. Watch for words that shouldn't be there (text that leaked in from a cue), dropped words, and mispronunciations that change the meaning. If a beat reads badly, whether rushed, mispronounced, or too long, rewrite it and re-synthesize that beat only. Then rebuild that chapter's timeline.
 
@@ -139,7 +139,7 @@ The map is an inline SVG with no graph library, built only from `work/graph.json
 
 ### End the video
 
-A video that stops on its last sentence feels broken, so it ends on purpose. After the god-node beat, the last chapter gets one **sign-off beat**: one short spoken line that closes the tour ("That's the tour of <project>." or a one-line recap). If the recap says anything about the code, it gets `claims.md` rows like any other beat. On screen, the map fades back and an **end card** settles: the project name, its one-line description quoted exactly from the README (a claim, so it gets a row), and a small "Made with /cribs". The card holds, fully settled, through the sign-off and most of the 3.0s tail. Then over the last 1.0s the picture fades to black inside `seek(t)` and the narration track fades out (`afade=t=out` when you build the chapter WAV), so the file ends on a black, silent frame rather than mid-picture.
+A video that stops on its last sentence feels broken, so it ends on purpose. After the god-node beat, the last chapter gets one **sign-off beat**: one short spoken line that closes the tour ("That's the tour of <project>." or a one-line recap). If the recap says anything about the code, it gets `claims.md` rows like any other beat. On screen, the map fades back and an **end card** settles: the project name, its one-line description quoted exactly from the README (a claim, so it gets a row), and a small "Made with /cribs". The card holds, fully settled, through the sign-off and most of the 3.5s tail (it holds about a dozen words, so at 0.3s per word it needs about 3.6s settled). Then over the last 1.0s the picture fades to black inside `seek(t)` and the narration track fades out (`afade=t=out` when you build the chapter WAV), so the file ends on a black, silent frame rather than mid-picture.
 
 ### Check the map labels
 
