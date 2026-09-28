@@ -1,0 +1,4 @@
+# /cribs run output and graphify's graph (both regenerated per run)
+**/cribs-output*/
+graphify-out/
+.DS_Store
