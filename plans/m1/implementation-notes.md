@@ -75,3 +75,10 @@ Running notes for the /explain build. Newest entries at the bottom.
 - **Changes on the move:** `name: cribs`, a `/cribs` trigger, and `cribs-output/`, `cribs.mp4`, `cribs.jpg`, `~/.cache/cribs-kvenv`. The example claims row that cited brag-slim is now plainly illustrative (`src/render.ts:42`). "the way brag-slim reuses them" became "so the video can reuse them".
 - **Licensing:** MIT, carrying the upstream copyright notice in LICENSE, since the skill adapts brag-slim's structure. No brag music or SFX assets were brought over, so the unverified ende.app music license question doesn't apply here.
 - **Not carried over:** brag's `.graphifyignore` (it was specific to that repo; the skill writes one per target repo as needed). There is no validation gate yet. See the follow-ups.
+
+## 2026-09-28 — Repo scaffold (TerMinal template) tailored for cribs
+
+- **Removed** `.gitlab/`: GitHub-only repo; the MR template only mirrored the PR template. Dropped the GitLab section of `docs/runbooks/branch-protection.md` too.
+- **Replaced** the template's bun CI (would fail on every push: no package.json, lockfile, or tests) with `scripts/check.sh`, which checks SKILL.md frontmatter (`name` matches its folder, `description` non-empty) and relative Markdown links. CI job keeps the name `quality` so the branch-protection runbook stays correct. Verified it fails on a planted bad skill and a broken link.
+- **Filled** placeholders in `CLAUDE.md` (header, [9], [11], [12]) and `docs/architecture.md`. Kept the template's generic TerMinal workflow sections unchanged.
+- **Follow-up:** the generic TerMinal sections of CLAUDE.md are long (~14KB); trim them if they prove noisy in sessions.

@@ -2,3 +2,16 @@
 **/cribs-output*/
 graphify-out/
 .DS_Store
+.TerMinal/backlog/
+.TerMinal/sessions/
+.TerMinal/reviews/
+.TerMinal/checks/
+.TerMinal/reports/
+.TerMinal/notes.md
+/backlog/
+/sessions/
+/.reviews/
+/.checks/
+/reports/
+.status.md
+.claude/pre-tm-backup/
