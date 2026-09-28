@@ -1,0 +1,11 @@
+# Written by /cribs: planning, history, and process docs describe how cribs
+# is built, not what it does, so they stay out of the code map.
+plans/
+CLAUDE.md
+docs/workflow/
+docs/decisions/
+docs/runbooks/
+docs/learnings/
+.github/PULL_REQUEST_TEMPLATE.md
+# /cribs output folders
+cribs-output*/

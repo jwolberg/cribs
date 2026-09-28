@@ -6,6 +6,12 @@
 
 What sets it apart is that it has to be right. Every claim the video shows or says is traced to a `file:line` or a node in the repo's knowledge graph and recorded in `claims.md`. Before anything renders, a reviewer with no prior context checks every row against the code.
 
+## Watch it
+
+[![The code map from the cribs self-tour: five clusters of the /cribs skill, with the "/cribs skill" node highlighted at the center](docs/media/cribs-code-map.png)](docs/media/cribs-tour.mp4)
+
+[▶ cribs gives itself the tour (1:36)](docs/media/cribs-tour.mp4): `/cribs` run on this repo. It covers what the skill is, then a code map drawn from its own knowledge graph, with all 27 claims traced to a file and line.
+
 ## What you get
 
 Run `/cribs` from a repo root. It writes a `cribs-output/` folder:
