@@ -8,6 +8,8 @@ What sets it apart is that it has to be right. Every claim the video shows or sa
 
 ## Watch it
 
+[![The code map from the cribs self-tour: five clusters of the /cribs skill, with the "/cribs skill" node highlighted at the center](docs/media/cribs-code-map.png)](docs/media/cribs-tour.mp4)
+
 [▶ cribs gives itself the tour (1:36)](docs/media/cribs-tour.mp4): `/cribs` run on this repo. It covers what the skill is, then a code map drawn from its own knowledge graph, with all 27 claims traced to a file and line.
 
 ## What you get
