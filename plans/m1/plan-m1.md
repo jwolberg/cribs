@@ -1,20 +1,20 @@
 ---
-title: /explain M1 (chapters 1-2, narrated, end to end) - Plan
+title: /cribs M1 (chapters 1-2, narrated, end to end) - Plan
 type: feat
 date: 2026-09-27
-origin: plans/explain/HANDOFF.md
+origin: plans/m1/HANDOFF.md
 artifact_contract: ce-unified-plan/v1
 artifact_readiness: implementation-ready
 product_contract_source: legacy-requirements
 execution: code
 ---
 
-# /explain M1 (chapters 1-2, narrated, end to end) - Plan
+# /cribs M1 (chapters 1-2, narrated, end to end) - Plan
 
 ## Goal Capsule
 
-- **Objective:** ship `skills/explain/SKILL.md` so that `/explain`, run in a repo, produces a ~90s narrated video of chapters 1 (What it is) and 2 (Code map), with every claim sourced.
-- **Authority:** `plans/explain/HANDOFF.md` decisions are settled and win over this plan; this plan wins over implementer preference.
+- **Objective:** ship `skills/cribs/SKILL.md` so that `/cribs`, run in a repo, produces a ~90s narrated video of chapters 1 (What it is) and 2 (Code map), with every claim sourced.
+- **Authority:** `plans/m1/HANDOFF.md` decisions are settled and win over this plan; this plan wins over implementer preference.
 - **Target repo for the M1 proof run:** this repo (`brag`).
 - **Stop conditions:** stop and ask if Kokoro TTS cannot run standalone (U2), if a change to `skills/brag*` looks necessary, or before any push.
 - **Tail:** one local commit per ticket, validation gate before each, no push.
@@ -25,7 +25,7 @@ execution: code
 
 ### Summary
 
-Add a sibling skill to `/brag-slim` that makes narrated code-explainer videos. M1 covers only chapters 1-2 (about 90 seconds) and proves the two new mechanisms: narration-timed visuals and an animated code map drawn from graphify output (see origin: plans/explain/HANDOFF.md).
+Add a sibling skill to `/brag-slim` that makes narrated code-explainer videos. M1 covers only chapters 1-2 (about 90 seconds) and proves the two new mechanisms: narration-timed visuals and an animated code map drawn from graphify output (see origin: plans/m1/HANDOFF.md).
 
 ### Problem Frame
 
@@ -34,7 +34,7 @@ Add a sibling skill to `/brag-slim` that makes narrated code-explainer videos. M
 ### Requirements
 
 **Skill shape**
-- R1. `skills/explain/SKILL.md` is one self-contained file that follows `skills/brag-slim/SKILL.md`'s structure: Inspect, Plan, Build/check/render, Deliver.
+- R1. `skills/cribs/SKILL.md` is one self-contained file that follows `skills/brag-slim/SKILL.md`'s structure: Inspect, Plan, Build/check/render, Deliver.
 - R2. `skills/brag*` files are not modified, and `skills/brag/slim.md` stays identical to `skills/brag-slim/SKILL.md`.
 
 **Accuracy**
@@ -47,11 +47,11 @@ Add a sibling skill to `/brag-slim` that makes narrated code-explainer videos. M
 - R7. Each chapter renders separately and ffmpeg joins them into one video.
 
 **Deliverables**
-- R8. Output lands in `explain-output/` (timestamped sibling if it exists): `explain.mp4` (chapters 1-2 with narration, about 90s), `script.md`, `claims.md`, `explain.jpg` (baked in as frame 0), and `share-copy.txt`.
+- R8. Output lands in `cribs-output/` (timestamped sibling if it exists): `cribs.mp4` (chapters 1-2 with narration, about 90s), `script.md`, `claims.md`, `cribs.jpg` (baked in as frame 0), and `share-copy.txt`.
 
 ### Acceptance Criteria (M1 done-when, from the handoff)
 
-- AC1. `/explain` in a target repo produces `explain-output/explain.mp4` (chapters 1-2 with narration), plus `script.md`, `claims.md`, `explain.jpg` (baked into frame 0), and `share-copy.txt`.
+- AC1. `/cribs` in a target repo produces `cribs-output/cribs.mp4` (chapters 1-2 with narration), plus `script.md`, `claims.md`, `cribs.jpg` (baked into frame 0), and `share-copy.txt`.
 - AC2. Every node and label in the code map exists in the graphify output, and every claim in `claims.md` has a source.
 - AC3. A reviewer subagent with no prior context has checked `claims.md` against the repo and found no unsupported claims.
 - AC4. `node scripts/check-docs.mjs && node scripts/check-brag-slim.mjs` still pass.
@@ -59,8 +59,8 @@ Add a sibling skill to `/brag-slim` that makes narrated code-explainer videos. M
 ### Scope Boundaries
 
 - Chapters 3-5 are out: M2 adds chapter 3, M3 chapter 4, M4 chapter 5 (trace capture, SQLite first).
-- No `.claude/skills/explain`, `.agents/skills/explain`, `.opencode/skills/explain` symlinks, README, PRODUCT.md, or `docs/` changes until `/explain` goes public after M1.
-- No bundled scripts or assets in `skills/explain/`; like brag-slim, the running model writes any helper it needs into `work/`.
+- No `.claude/skills/cribs`, `.agents/skills/cribs`, `.opencode/skills/cribs` symlinks, README, PRODUCT.md, or `docs/` changes until `/cribs` goes public after M1.
+- No bundled scripts or assets in `skills/cribs/`; like brag-slim, the running model writes any helper it needs into `work/`.
 - No music. Narration drives the soundtrack in M1.
 
 ---
@@ -77,11 +77,11 @@ Add a sibling skill to `/brag-slim` that makes narrated code-explainer videos. M
 - KTD6. **Chapters render to identical encode settings** (1920x1080, 30fps, H.264, AAC 48kHz) so the ffmpeg concat demuxer can join them without re-encoding; the poster is then baked into frame 0 of the joined file, as brag-slim does.
 - KTD7. **graphify output stays at the target repo's `graphify-out/`**, where graphify writes it and where its query fast path looks. The skill copies `graph.json` into `work/` for the run. This repo gitignores `graphify-out/` since it is the M1 target.
 - KTD9. **Keep media out of the graph with `.graphifyignore`, not `.gitignore`.** graphify reads both files. This repo tracks ten demo mp4s under `examples/` and `docs/`, and graphify would transcribe them. Ignoring them in `.gitignore` would also stop new gallery videos from being added, so the skill checks graphify's detect output for video or audio and, if any is found, writes a `.graphifyignore` in the target repo before extraction and tells the user.
-- KTD8. **Implementation notes live at `plans/explain/implementation-notes.md`**, not `docs/`, because `docs/` is the GitHub Pages root. Logged as the first notes entry.
+- KTD8. **Implementation notes live at `plans/m1/implementation-notes.md`**, not `docs/`, because `docs/` is the GitHub Pages root. Logged as the first notes entry.
 
 ### High-Level Technical Design
 
-Pipeline per `/explain` run. Chapters render independently, so a bad chapter is redone alone.
+Pipeline per `/cribs` run. Chapters render independently, so a bad chapter is redone alone.
 
 ```mermaid
 flowchart TB
@@ -95,7 +95,7 @@ flowchart TB
   H -->|unsupported claim| C
   H -->|clean| I[Render each chapter, mux its narration]
   I --> J[ffmpeg concat, bake poster into frame 0]
-  J --> K[explain.mp4, explain.jpg, share-copy.txt]
+  J --> K[cribs.mp4, cribs.jpg, share-copy.txt]
 ```
 
 ### Target timing
@@ -107,7 +107,7 @@ About 90s total: chapter 1 about 35s (4-6 beats), chapter 2 about 55s (one intro
 - The brag repo is thin on code (mostly Markdown skills plus two scripts), so its graph leans on graphify's semantic extraction of docs. Scope the graphify run to source and docs, not the committed mp4s under `examples/` and `docs/`, so no video transcription runs.
 - graphify refuses to shrink an existing `graph.json`, so the first scoped run must be right. A wrong first run needs `--force` to redo.
 - Frames are captured with headless Chrome (the Chrome app is installed; no Playwright cache). The exact capture tool is chosen at execution time, as brag-slim leaves it to the model.
-- The M1 run happens in this session with the skill installed by symlink; the user approved Claude creating `~/.claude/skills/explain`.
+- The M1 run happens in this session with the skill installed by symlink; the user approved Claude creating `~/.claude/skills/cribs`.
 
 ### Risks
 
@@ -125,11 +125,11 @@ About 90s total: chapter 1 about 35s (4-6 beats), chapter 2 about 55s (one intro
 
 ```text
 .graphifyignore                         # keeps demo media out of graphify (KTD9)
-skills/explain/SKILL.md                 # the skill (only new tracked skill file)
-plans/explain/plan-m1.md                # this plan
-plans/explain/implementation-notes.md   # running notes
-explain-output/                         # per run, gitignored
-  explain.mp4  explain.jpg  script.md  claims.md  share-copy.txt
+skills/cribs/SKILL.md                   # the skill (only new tracked skill file)
+plans/m1/plan-m1.md                     # this plan
+plans/m1/implementation-notes.md        # running notes
+cribs-output/                           # per run, gitignored
+  cribs.mp4  cribs.jpg  script.md  claims.md  share-copy.txt
   work/  graph.json  audio/  chapters/  frames/  stills/  review.md
 ```
 
@@ -142,20 +142,20 @@ explain-output/                         # per run, gitignored
 - **Goal:** land the handoff and this plan, ignore run output, open the notes file.
 - **Requirements:** R8 (output location), KTD7, KTD8.
 - **Dependencies:** none.
-- **Files:** `plans/explain/HANDOFF.md`, `plans/explain/plan-m1.md`, `.gitignore`, `.graphifyignore` (new), `plans/explain/implementation-notes.md` (new).
+- **Files:** `plans/m1/HANDOFF.md`, `plans/m1/plan-m1.md`, `.gitignore`, `.graphifyignore` (new), `plans/m1/implementation-notes.md` (new).
 - **Approach:**
-  1. Add `**/explain-output*/` and `graphify-out/` to `.gitignore`, next to the `brag-output*/` rule.
+  1. Add `**/cribs-output*/` and `graphify-out/` to `.gitignore`, next to the `brag-output*/` rule.
   2. Add `.graphifyignore` excluding `*.mp4`, images, and `docs/` (the Pages site), per KTD9.
   3. Start the notes with dated entries for the `docs/` deviation (KTD8), the three answered open questions, and the `graphify-out/` ignore.
 - **Test expectation:** none -- config and docs only.
-- **Verification:** `git status` shows no stray files after a dummy `explain-output/x`; the validation gate passes.
+- **Verification:** `git status` shows no stray files after a dummy `cribs-output/x`; the validation gate passes.
 
 ### U2. Verify Kokoro TTS runs standalone
 
 - **Goal:** prove `npx hyperframes tts` produces a WAV from one sentence outside any Hyperframes composition, and measure it.
 - **Requirements:** R6, KTD1, KTD2.
 - **Dependencies:** U1.
-- **Files:** `plans/explain/implementation-notes.md`.
+- **Files:** `plans/m1/implementation-notes.md`.
 - **Approach:** synthesize two short test sentences into the scratchpad, measure each with `ffprobe`, and record the exact working command, voice, sample rate, first-run download cost, and per-sentence latency in the notes.
 - **Execution note:** smoke check, not code. If it fails, stop and ask before choosing a fallback.
 - **Test scenarios:**
@@ -165,10 +165,10 @@ explain-output/                         # per run, gitignored
 
 ### U3. SKILL.md skeleton, Inspect step, and the accuracy contract
 
-- **Goal:** create `skills/explain/SKILL.md` with frontmatter, usage, output layout, the accuracy rule, and the Inspect step (README, entry points, graphify run).
+- **Goal:** create `skills/cribs/SKILL.md` with frontmatter, usage, output layout, the accuracy rule, and the Inspect step (README, entry points, graphify run).
 - **Requirements:** R1, R2, R3, R8, KTD5, KTD7, KTD9.
 - **Dependencies:** U1.
-- **Files:** `skills/explain/SKILL.md` (new).
+- **Files:** `skills/cribs/SKILL.md` (new).
 - **Approach:**
   1. Mirror brag-slim's opening: what it makes, options table (only `--voice <kokoro voice>`, default `af_heart`; landscape 1920x1080 is fixed in M1), output folder rule.
   2. State the accuracy law and the `claims.md` table format (KTD5).
@@ -182,7 +182,7 @@ explain-output/                         # per run, gitignored
 - **Goal:** add the Plan step: `script.md` with beats per chapter, TTS per beat, measured timeline.
 - **Requirements:** R3, R6, KTD1, KTD2.
 - **Dependencies:** U2, U3.
-- **Files:** `skills/explain/SKILL.md`.
+- **Files:** `skills/cribs/SKILL.md`.
 - **Approach:**
   1. Script format: per chapter, numbered beats, each with narration text, the on-screen element it cues, and the `claims.md` ids it relies on.
   2. Synthesize each beat, measure it, and write a timeline (beat start, duration) per chapter into `work/`.
@@ -195,7 +195,7 @@ explain-output/                         # per run, gitignored
 - **Goal:** add the build guidance for chapter 1 and for chapter 2's SVG code map, including the label check.
 - **Requirements:** R4, KTD3, KTD4.
 - **Dependencies:** U4.
-- **Files:** `skills/explain/SKILL.md`.
+- **Files:** `skills/cribs/SKILL.md`.
 - **Approach:**
   1. Chapter 1: title, one-line what-it-is, who it's for, the project's own identity (colors, fonts) as brag-slim does, each element cued to its beat.
   2. Chapter 2: choose clusters and nodes from graphify communities and degree (KTD3), lay out in inline SVG, reveal cluster by cluster on beat starts (KTD4), labels copied verbatim.
@@ -208,7 +208,7 @@ explain-output/                         # per run, gitignored
 - **Goal:** add the render and delivery steps: stills check, fresh reviewer gate, per-chapter render, ffmpeg join, poster, share copy.
 - **Requirements:** R5, R7, R8, KTD5, KTD6.
 - **Dependencies:** U5.
-- **Files:** `skills/explain/SKILL.md`.
+- **Files:** `skills/cribs/SKILL.md`.
 - **Approach:**
   1. Stills at every beat start and mid-reveal; fix overflow and contrast (brag-slim section 3).
   2. Spawn a reviewer subagent with no prior context, giving it `claims.md` and the repo path and asking it to mark each row supported or unsupported with evidence into `work/review.md`. Fix and re-run until clean.
@@ -218,23 +218,23 @@ explain-output/                         # per run, gitignored
 
 ### U7. Install and run M1 on this repo
 
-- **Goal:** symlink the skill, run `/explain` on the brag repo, and verify the done-when criteria with fresh eyes.
+- **Goal:** symlink the skill, run `/cribs` on the brag repo, and verify the done-when criteria with fresh eyes.
 - **Requirements:** AC1-AC4.
 - **Dependencies:** U6.
-- **Files:** `plans/explain/implementation-notes.md`, plus any `skills/explain/SKILL.md` fixes the run exposes.
+- **Files:** `plans/m1/implementation-notes.md`, plus any `skills/cribs/SKILL.md` fixes the run exposes.
 - **Approach:**
-  1. `ln -s` `skills/explain` into `~/.claude/skills/explain` (approved by the user).
-  2. Run the skill end to end in this repo into `explain-output/`.
+  1. `ln -s` `skills/cribs` into `~/.claude/skills/cribs` (approved by the user).
+  2. Run the skill end to end in this repo into `cribs-output/`.
   3. Separately from the skill's own gate, spawn a new reviewer subagent with only the acceptance criteria, `claims.md`, `graph.json`, and the repo, and have it verify AC2 and AC3.
   4. Record the run (length, durations, review verdict, fixes made to SKILL.md) in the notes.
 - **Execution note:** this is the unit's proof; every SKILL.md fix found here is part of this ticket.
 - **Test scenarios:**
   - Covers AC1. All five deliverables exist; `ffprobe` shows one video and one audio stream and a duration of about 90s.
-  - Covers AC1. Frame 0 of `explain.mp4` matches `explain.jpg`, and the duration equals the pre-poster duration.
+  - Covers AC1. Frame 0 of `cribs.mp4` matches `cribs.jpg`, and the duration equals the pre-poster duration.
   - Covers AC2. The label check passes: every code-map label is found in `graph.json`.
   - Covers AC2 / AC3. The fresh reviewer marks every `claims.md` row supported with a cited location.
   - Covers AC4. The validation gate passes.
-- **Verification:** the reviewer's report is saved in `explain-output/work/` and summarized in the notes; the user can watch `explain.mp4`.
+- **Verification:** the reviewer's report is saved in `cribs-output/work/` and summarized in the notes; the user can watch `cribs.mp4`.
 
 ---
 
@@ -251,6 +251,6 @@ explain-output/                         # per run, gitignored
 
 ## Definition of Done
 
-- AC1-AC4 hold on the brag repo, with evidence in `plans/explain/implementation-notes.md`.
+- AC1-AC4 hold on the brag repo, with evidence in `plans/m1/implementation-notes.md`.
 - Seven commits, one per unit, none pushed.
-- No leftover experiments in the diff: only `skills/explain/SKILL.md`, the plans folder, `.gitignore`, and `.graphifyignore` changed.
+- No leftover experiments in the diff: only `skills/cribs/SKILL.md`, the plans folder, `.gitignore`, and `.graphifyignore` changed.

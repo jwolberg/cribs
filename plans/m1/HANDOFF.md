@@ -1,10 +1,10 @@
-# Handoff: `/explain` — narrated code-explainer videos
+# Handoff: `/cribs` — narrated code-explainer videos
 
 Written 2026-09-27 at the end of a design conversation. Read this fully before planning.
 
 ## Goal
 
-A new skill, `skills/explain/`, that turns a code repository into a narrated explainer video of about 5–8 minutes. The reference is a ~7-minute SQLite explainer (the user has the link; ask for it if you want to study its pacing). The video has five chapters:
+A new skill, `skills/cribs/`, that turns a code repository into a narrated explainer video of about 5–8 minutes. The reference is a ~7-minute SQLite explainer (the user has the link; ask for it if you want to study its pacing). The video has five chapters:
 
 1. **What it is:** what the repo does and why it's useful.
 2. **Code map:** a high-level map of the codebase as a beautiful animated graphic.
@@ -27,7 +27,7 @@ A new skill, `skills/explain/`, that turns a code repository into a narrated exp
 **M1: a minimal end-to-end version covering chapters 1 and 2 only, about 90 seconds, on one small repo the user knows.** It proves the two new mechanisms, narration-timed visuals and the animated code map, before anything else gets built. Chapters 3–5 are later milestones: M2 adds chapter 3 (the request's path through real code snippets), M3 adds chapter 4, and M4 adds chapter 5 (trace capture, SQLite first).
 
 M1 is done when:
-- `/explain` in a target repo produces `explain-output/explain.mp4` (chapters 1–2 with narration), plus `script.md`, `claims.md`, `explain.jpg` (baked into frame 0), and `share-copy.txt`.
+- `/cribs` in a target repo produces `cribs-output/cribs.mp4` (chapters 1–2 with narration), plus `script.md`, `claims.md`, `cribs.jpg` (baked into frame 0), and `share-copy.txt`.
 - Every node and label in the code map exists in the graphify output, and every claim in `claims.md` has a source.
 - A reviewer subagent with no prior context has checked `claims.md` against the repo and found no unsupported claims.
 - `node scripts/check-docs.mjs && node scripts/check-brag-slim.mjs` still pass.
@@ -36,7 +36,7 @@ M1 is done when:
 
 1. **TTS engine.** Options include Kokoro via `npx hyperframes tts` (already used by `/brag --voice`), macOS `say` (zero dependencies, lower quality), or a hosted API (external calls, cost). This adds a dependency, so ask.
 2. **Target repo for M1:** a small repo the user knows well. SQLite is the M4 benchmark, not the M1 target.
-3. **Install path for trying it:** probably symlink `skills/explain` into `~/.claude/skills/explain`. That's outside the repo, so the user does it or approves it.
+3. **Install path for trying it:** probably symlink `skills/cribs` into `~/.claude/skills/cribs`. That's outside the repo, so the user does it or approves it.
 
 ## Unverified (check before relying on it)
 
@@ -46,8 +46,8 @@ M1 is done when:
 ## Repo facts
 
 - Fork: `origin` = `github.com/jwolberg/brag`, `upstream` = `latent-spaces/brag`. Work branch: `feat/explain`. Never push to `upstream`, and push to `origin` only when the user asks.
-- **`docs/` is the GitHub Pages deploy root**, so don't write implementation notes there. Use `plans/explain/implementation-notes.md` instead of the global default `docs/implementation-notes.md`, and log that deviation as the first entry.
+- **`docs/` is the GitHub Pages deploy root**, so don't write implementation notes there. Use `plans/m1/implementation-notes.md` instead of the global default `docs/implementation-notes.md`, and log that deviation as the first entry.
 - Validation gate (no package.json, no test suite): `node scripts/check-docs.mjs && node scripts/check-brag-slim.mjs`. Both passed on 2026-09-27.
 - Tooling on this machine: node 22.14, ffmpeg, uv, python3.10, sqlite3 3.43.2.
-- Output folders to gitignore: `explain-output*/` (as `brag-output*/` already is).
-- If `/explain` becomes public, add `.claude/skills/explain`, `.agents/skills/explain` and `.opencode/skills/explain` symlinks following the existing pattern. That can wait until after M1.
+- Output folders to gitignore: `cribs-output*/` (as `brag-output*/` already is).
+- If `/cribs` becomes public, add `.claude/skills/cribs`, `.agents/skills/cribs` and `.opencode/skills/cribs` symlinks following the existing pattern. That can wait until after M1.
