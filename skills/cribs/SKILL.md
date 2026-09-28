@@ -45,7 +45,8 @@ Read the README, the manifest (`package.json`, `pyproject.toml`, `Cargo.toml`, �
 
 The code map comes from the `graphify` skill, not from your guess at the architecture. Read `~/.claude/skills/graphify/SKILL.md` and follow it on the repo root, with these rules:
 
-- **Reuse a current graph.** If `graphify-out/graph.json` exists and its `built_at_commit` matches `git rev-parse HEAD`, use it as is. Otherwise build it.
+- **Reuse a current graph.** If `graphify-out/graph.json` exists, its `built_at_commit` matches `git rev-parse HEAD`, and it was built with the same `.graphifyignore` you need (see the next rule), use it as is. Otherwise build it.
+- **Map the product, not its paperwork.** The code map shows what the project *does*, so the graph is built from the shipped code and the docs that describe it (README, architecture docs, user guides). Docs about how the project gets *built* or *run as a team* describe a different thing and, being long and heavily cross-linked, will take over the map and the god node: plans and milestone folders, handoffs, implementation notes and changelogs, session logs, ADR logs, runbooks, and contributor or agent workflow docs (`CLAUDE.md`, `AGENTS.md`, `CONTRIBUTING.md`, PR templates). Before extraction, add these to `.graphifyignore` and tell the user in one line which paths you left out. Chapter 1 can still quote them in `claims.md`; they just aren't map material. If this removes files from an existing graph, graphify's shrink guard refuses the smaller graph, so pass `force=True` to `to_json` (the CLI's `--force`).
 - **Keep media out.** After graphify's detect step, check its output (`graphify-out/.graphify_detect.json`) for video or audio files (detect lists audio such as `.mp3`, `.ogg` and `.wav` under `video`). If there are any, don't transcribe them: write or extend a `.graphifyignore` in the repo root (same syntax as `.gitignore`) to exclude them, re-run detect, and tell the user in one line that you did. Use `.graphifyignore` rather than `.gitignore`, so git keeps tracking the files.
 - **Skip verbatim copies.** If a file is a byte-for-byte copy of another (a bundled mirror of a skill, say), add the copy to `.graphifyignore` too, or the map gets duplicate nodes.
 - **Get the first run right.** graphify refuses to write a `graph.json` smaller than the existing one, so a bad run can only be redone with `--force`. Check the detected file list before extraction.
@@ -58,7 +59,7 @@ Copy `graph.json` and `.graphify_labels.json` into `work/`. From here on the cop
 Before planning, answer each of these with a source (a `file:line`, or a node or community id):
 
 - **What is it** (one sentence)? **Who is it for**, and what does it do for them? **Why is it useful**, meaning what can someone do with it that they couldn't easily do without it?
-- **What are the main parts?** Pick 4–6 of graphify's communities to show, and for each one its 2–4 highest-degree nodes. Merge tiny communities or drop isolated nodes if the map gets noisy, but only with names that already exist in `graph.json` or `.graphify_labels.json`.
+- **What are the main parts?** Pick 3–6 of graphify's communities to show (fewer when the product is small, never padded with paperwork), and for each one its 2–4 highest-degree nodes. Merge tiny communities or drop isolated nodes if the map gets noisy, but only with names that already exist in `graph.json` or `.graphify_labels.json`.
 - **Which part holds the others together?** graphify's god nodes (its most-connected nodes) usually answer this. Its ranking skips whole-file nodes, so a file can have more connections than the top god node. Count degree in `graph.json` yourself, and word the claim to match what you counted ("not counting whole files, the most connected node is …").
 
 Start `claims.md` with these answers.
@@ -80,7 +81,7 @@ Break each chapter into numbered **beats**. A beat is one or two spoken sentence
 
 The format is `beat | narration | on-screen cue | claims ids`. Every beat that states something about the code lists the `claims.md` rows it relies on.
 
-**Target length:** about 90 seconds. Chapter 1 is about 35s in 4–6 beats. Chapter 2 is about 55s: one intro beat, one beat per cluster, and one closing beat that names the god node. These are planning targets. The measured audio sets the real length.
+**Target length:** about 90 seconds. Chapter 1 is about 35s in 4–6 beats. Chapter 2 is about 55s: one intro beat, one beat per cluster, one beat that names the god node, and the sign-off beat (see "End the video"). These are planning targets. The measured audio sets the real length.
 
 ### Narration laws
 
@@ -110,9 +111,9 @@ npx -y hyperframes tts "<narration>" -o work/audio/2.2.wav --voice af_heart --js
 
 ### Build the timeline
 
-For each chapter, write `work/timeline-<n>.json`: every beat's start time and duration, with a gap of 0.4s between beats plus 0.8s of silence at the start and 1.0s at the end of the chapter. Beat start times are the cue points for the visuals. Build the chapter's narration track, `work/audio/chapter-<n>.wav`, by concatenating the beats with that silence (ffmpeg `adelay` or `apad`, or pre-made silent WAVs, at 48 kHz), and check that its length matches the timeline.
+For each chapter, write `work/timeline-<n>.json`: every beat's start time and duration, with a gap of 0.4s between beats plus 0.8s of silence at the start and 1.0s at the end of the chapter. The last chapter ends with 3.0s instead, for the end card and fade. Beat start times are the cue points for the visuals. Build the chapter's narration track, `work/audio/chapter-<n>.wav`, by concatenating the beats with that silence (ffmpeg `adelay` or `apad`, or pre-made silent WAVs, at 48 kHz), and check that its length matches the timeline.
 
-If a beat reads badly, whether rushed, mispronounced, or too long, rewrite it and re-synthesize that beat only. Then rebuild that chapter's timeline.
+Then check what the voice actually said. Transcribe every beat WAV with a small local speech-to-text model, for example `uv run --with faster-whisper` and the `base.en` model, and compare it with the narration. Watch for words that shouldn't be there (text that leaked in from a cue), dropped words, and mispronunciations that change the meaning. If a beat reads badly, whether rushed, mispronounced, or too long, rewrite it and re-synthesize that beat only. Then rebuild that chapter's timeline.
 
 ## 3. Build, check, render
 
@@ -135,6 +136,10 @@ The map is an inline SVG with no graph library, built only from `work/graph.json
 - **Content.** Each cluster is one of the communities you picked in Inspect, titled with its name from `.graphify_labels.json`. Its nodes are its 2–4 highest-degree nodes, labeled with their `label` from `graph.json` exactly as written, never shortened or reworded. Show the edges between the shown nodes that `graph.json` actually has, and at most a few of them if the map gets busy. Mark the god node so it stands out.
 - **Layout.** Compute positions once and write them into the page: clusters on a loose grid or ring, each cluster's nodes packed inside a rounded region, and label boxes that never overlap. Leave room for the longest label at the video's font size, and wrap long labels at spaces so the lines rejoin to the exact label. Draw in three layers (panels, then edges, then nodes) so links between clusters aren't hidden under the panels, and route them through the gaps between panels so they never cross a title.
 - **Reveal.** At each cluster's beat start, its region fades in, then its nodes draw in one by one over about a second, then its edges draw. Earlier clusters dim a little so the one being narrated leads. The closing beat brings everything back to full strength and highlights the god node and its edges.
+
+### End the video
+
+A video that stops on its last sentence feels broken, so it ends on purpose. After the god-node beat, the last chapter gets one **sign-off beat**: one short spoken line that closes the tour ("That's the tour of <project>." or a one-line recap). If the recap says anything about the code, it gets `claims.md` rows like any other beat. On screen, the map fades back and an **end card** settles: the project name, its one-line description quoted exactly from the README (a claim, so it gets a row), and a small "Made with /cribs". The card holds, fully settled, through the sign-off and most of the 3.0s tail. Then over the last 1.0s the picture fades to black inside `seek(t)` and the narration track fades out (`afade=t=out` when you build the chapter WAV), so the file ends on a black, silent frame rather than mid-picture.
 
 ### Check the map labels
 
@@ -175,5 +180,6 @@ Check each chapter with `ffprobe`: one video stream and one audio stream, and a 
     -filter_complex "[1:v]format=yuv420p,scale=1920:1080[p];[0:v][p]overlay=enable='eq(n\,0)':shortest=1[v]" \
     -map "[v]" -map 0:a -c:v libx264 -pix_fmt yuv420p -fps_mode passthrough -c:a copy -movflags +faststart cribs.mp4
   ```
+- **Check the ending:** confirm that `cribs.mp4` really plays out to its end. `ffmpeg -v error -i cribs.mp4 -f null -` decodes it with no errors. The duration matches the sum of the chapter timelines within a frame. Speech (via `silencedetect`) ends within the last few seconds, not earlier, which catches a dropped chapter. And the last frame is black.
 - **`share-copy.txt`:** 1–3 sentences, postable as-is, specific to this project. Say what the viewer will understand after watching. No "excited to share."
 - **Tell the user** where the video is, its length, how many claims it makes and that a fresh reviewer checked all of them, and offer to redo a chapter or re-voice a beat.
